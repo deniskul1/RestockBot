@@ -1,8 +1,7 @@
 package epikjamer.sneakerbot.discord.listeners;
 
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -21,10 +20,10 @@ import java.util.concurrent.Executors;
 
 public class Premium extends ListenerAdapter {
     private final Map<Long, Consumer<MessageReceivedEvent>> awaitingResponses = new HashMap<>();
-    private final List<String> whitelistedWebsites = Arrays.asList("https://www.sportchek.ca", "https://www.champssports.com", "https://www.footlocker.com", "https://jdsports.ca", "https://www.footlocker.ca");
     private final Map<Long, WebDriver> activeSessions = new HashMap<>();
     private final Map<Long, List<WebDriver>> activePremiumSessions = new HashMap<>();
     private final ExecutorService executorService;
+
     public Premium() {
         this.executorService = Executors.newFixedThreadPool(100);
     }
@@ -63,15 +62,11 @@ public class Premium extends ListenerAdapter {
                 event.getChannel().sendMessage("You need to have the 'Premium' role to use this command.").queue();
                 return;
             }
-            List<WebDriver> drivers = activePremiumSessions.get(event.getAuthor().getIdLong());
-            if (drivers != null && drivers.size() >= 5) {
-                event.getChannel().sendMessage("You already have 5 active premium stock checks. Please type 'Stop' to end them before starting another.").queue();
-                return;
-            }
-            event.getChannel().sendMessage(MessageCreateData.fromContent("Please reply with the URL of the website to check the stock.")).queue();
-            Consumer<MessageReceivedEvent> urlConsumer = urlEvent -> {
-                String url = urlEvent.getMessage().getContentRaw();
-                if (whitelistedWebsites.stream().anyMatch(url::startsWith)) {
+            event.getChannel().sendMessage(MessageCreateData.fromContent("Please reply with the number corresponding to the website you want to check the stock on:\n1: Footlocker CA\n2: Footlocker US\n3: Champs Sports\n4: JD Sports CA\n5: Sport Check")).queue();
+            Consumer<MessageReceivedEvent> siteConsumer = siteEvent -> {
+                String siteNumber = siteEvent.getMessage().getContentRaw();
+                String url = getWebsiteFromNumber(siteNumber);
+                if (url != null) {
                     event.getChannel().sendMessage(MessageCreateData.fromContent("Please reply with the name of the item to check the stock of.")).queue();
                     Consumer<MessageReceivedEvent> itemConsumer = itemEvent -> {
                         String itemName = itemEvent.getMessage().getContentRaw();
@@ -89,56 +84,78 @@ public class Premium extends ListenerAdapter {
                         };
                         awaitingResponses.put(itemEvent.getAuthor().getIdLong(), priceConsumer);
                     };
-                    awaitingResponses.put(urlEvent.getAuthor().getIdLong(), itemConsumer);
+                    awaitingResponses.put(siteEvent.getAuthor().getIdLong(), itemConsumer);
                 } else {
-                    event.getChannel().sendMessage(MessageCreateData.fromContent("That website is not whitelisted. Check #current-whitelisted-websites to see which websites are.")).queue();
+                    event.getChannel().sendMessage(MessageCreateData.fromContent("Invalid website number. Please try again with a valid number.")).queue();
                 }
             };
-            awaitingResponses.put(event.getAuthor().getIdLong(), urlConsumer);
+            awaitingResponses.put(event.getAuthor().getIdLong(), siteConsumer);
         }
     }
-    private void navigateAndCheckStock(String url, String itemName, String priceRange, MessageChannelUnion channel, long userId) throws Throwable {
+
+    private String getWebsiteFromNumber(String number) {
+        switch (number) {
+            case "1":
+                return "https://www.footlocker.ca";
+            case "2":
+                return "https://www.footlocker.com";
+            case "3":
+                return "https://www.champssports.com";
+            case "4":
+                return "https://jdsports.ca";
+            case "5":
+                return "https://www.sportchek.ca";
+            default:
+                return null;
+        }
+    }
+
+    private void navigateAndCheckStock(String url, String itemName, String priceRange, MessageChannel channel, long userId) throws Throwable {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Denis\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless=new");
         WebDriver driver = new ChromeDriver(options);
-        List<WebDriver> drivers = activePremiumSessions.computeIfAbsent(userId, k -> new ArrayList<>());
-        drivers.add(driver);
+        activeSessions.put(userId, driver);
+        driver.get(url);
         try {
-            driver.get(url);
-            WebElement searchbar = driver.findElement(By.xpath("//input[@name='q' or @name='query' or @id='search-input-0']"));
-            List<WebElement> botMessageElements = driver.findElements(By.xpath("//*[contains(text(),'We want to make sure it is actually you we are dealing with and not a robot.' or 'You have been blocked.')]"));
+            Thread.sleep(3000); // Wait for page to load
+            WebElement searchbar;
             try {
-                if (!botMessageElements.isEmpty()) {
-                    channel.sendMessage("<@" + userId + "> Website is currently blocked, try again later.").queue();
-                    Thread.sleep(10000);
-                    driver.quit();
-                }
-                searchbar.click();
-                searchbar.sendKeys(itemName + Keys.RETURN);
-                boolean inStock = false;
-                while (!inStock) {
-                    try {
-                        driver.findElement(By.xpath("//*[contains(text(),'" + priceRange + "')]"));
-                        channel.sendMessage("<@" + userId + "> The item is in stock!").queue();
-                        inStock = true;
-                    } catch (NoSuchElementException e) {
-                        System.out.println("Not in stock, refreshing...");
-                        driver.navigate().refresh();
-                        Thread.sleep(20000);
-                    }
-                }
-            } finally {
-                if (activePremiumSessions.containsKey(userId)) {
-                    drivers.remove(driver);
-                    if (drivers.isEmpty()) {
-                        activePremiumSessions.remove(userId);
-                    }
-                    driver.quit();
+                searchbar = driver.findElement(By.xpath("//input[@name='q' or @name='query' or @id='search-input-0']"));
+            } catch (NoSuchElementException e) {
+                // Handle case where search bar is not found, possibly due to being blocked
+                channel.sendMessage("<@" + userId + "> Unable to find the search bar, the website might be blocking access, try again later.").queue();
+                return; // Exit the method early
+            }
+            Thread.sleep(3000);
+            List<WebElement> botMessageElements = driver.findElements(By.xpath(
+                    "//*[contains(text(),'We want to make sure it is actually you we are dealing with and not a robot.') or contains(text(),'You have been blocked.') or contains(@class, 'captcha__human__title')]"
+            ));
+
+            if (!botMessageElements.isEmpty()) {
+                channel.sendMessage("<@" + userId + "> Website is currently blocked, try again later.").queue();
+                Thread.sleep(10000);
+                return; // Exit the method early
+            }
+            searchbar.click();
+            searchbar.sendKeys(itemName + Keys.RETURN);
+            boolean inStock = false;
+            while (!inStock) {
+                try {
+                    Thread.sleep(3000);
+                    driver.findElement(By.xpath("//*[contains(text(),'" + priceRange + "')]"));
+                    channel.sendMessage("<@" + userId + "> The item is in stock!").queue();
+                    inStock = true;
+                } catch (NoSuchElementException e) {
+                    System.out.println("Not in stock, refreshing...");
+                    Thread.sleep(20000);
+                    driver.navigate().refresh();
                 }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
-
+            driver.quit();
+            activeSessions.remove(userId);
         }
     }
 }
