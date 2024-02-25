@@ -111,7 +111,7 @@ public class EventListeners extends ListenerAdapter {
             Thread.sleep(3000);
             WebElement searchbar = driver.findElement(By.xpath("//input[@name='q' or @name='query' or @id='search-input-0']"));
             Thread.sleep(3000);
-            List<WebElement> botMessageElements = driver.findElements(By.xpath("//*[contains(text(),'We want to make sure it is actually you we are dealing with and not a robot.' or 'You have been blocked.')]"));
+            List<WebElement> botMessageElements = driver.findElements(By.xpath("//*[contains(text(),'We want to make sure it is actually you we are dealing with and not a robot.') or contains(text(),'You have been blocked.')]"));
             if (!botMessageElements.isEmpty()) {
                 channel.sendMessage("<@" + userId + "> Website is currently blocked, try again later.").queue();
                 Thread.sleep(10000);
