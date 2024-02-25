@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -74,9 +75,9 @@ public class EventListeners extends ListenerAdapter {
                     Consumer<MessageReceivedEvent> itemConsumer = itemEvent -> {
                         String itemName = itemEvent.getMessage().getContentRaw();
                         event.getChannel().sendMessage(MessageCreateData.fromContent("Please reply with the price for the item EX: $150. If you are unsure what the price of the item is, please search up its retail price")).queue();
-
                         Consumer<MessageReceivedEvent> priceConsumer = priceEvent -> {
                             String priceRange = priceEvent.getMessage().getContentRaw();
+                            event.getChannel().sendMessage(MessageCreateData.fromContent("Now checking, you will be pinged once your item is in stock...")).queue();
                             executorService.submit(() -> {
                                 try {
                                     navigateAndCheckStock(url, itemName, priceRange, event.getChannel(), Long.parseLong(event.getAuthor().getId()));
@@ -101,13 +102,21 @@ public class EventListeners extends ListenerAdapter {
 
     private void navigateAndCheckStock(String url, String itemName, String priceRange, MessageChannel channel, long userId) throws Throwable {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Denis\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
+        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--headless=new");
         WebDriver driver = new ChromeDriver();
         activeSessions.put(userId, driver); // Track the session
         driver.get(url);
         try {
             Thread.sleep(3000);
             WebElement searchbar = driver.findElement(By.xpath("//input[@name='q' or @name='query' or @id='search-input-0']"));
-
+            Thread.sleep(3000);
+            List<WebElement> botMessageElements = driver.findElements(By.xpath("//*[contains(text(),'We want to make sure it is actually you we are dealing with and not a robot.' or 'You have been blocked.')]"));
+            if (!botMessageElements.isEmpty()) {
+                channel.sendMessage("<@" + userId + "> Website is currently blocked, try again later.").queue();
+                Thread.sleep(10000);
+                driver.quit();
+            }
             searchbar.click();
             searchbar.sendKeys(itemName + Keys.RETURN);
             boolean inStock = false;
@@ -130,11 +139,11 @@ public class EventListeners extends ListenerAdapter {
                     throw new RuntimeException(e);
                 }
             }
-        } finally {
-            if (activeSessions.containsKey(userId)) {
-                activeSessions.remove(userId);
-                driver.quit(); // Ensure WebDriver is closed when done
+                } finally {
+                    if (activeSessions.containsKey(userId)) {
+                        activeSessions.remove(userId);
+                        driver.quit(); // Ensure WebDriver is closed when done
+                    }
+                }
             }
-        }
-    }
-}
+  }

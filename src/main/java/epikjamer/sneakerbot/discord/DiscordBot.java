@@ -1,6 +1,7 @@
 package epikjamer.sneakerbot.discord;
 
 import epikjamer.sneakerbot.discord.listeners.EventListeners;
+import epikjamer.sneakerbot.discord.listeners.Premium;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -13,18 +14,19 @@ public class DiscordBot {
     private final ShardManager shardManager;
 
     public DiscordBot() {
-        Dotenv dotenv = Dotenv.load(); // Load environment variables
-        String token = dotenv.get("DISCORD_TOKEN"); // Retrieve the bot token from .env file
+        Dotenv dotenv = Dotenv.load();
+        String token = dotenv.get("DISCORD_TOKEN");
 
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token)
-                .enableIntents(GatewayIntent.GUILD_MESSAGES) // Enable GUILD_MESSAGES intent
-                .enableIntents(GatewayIntent.DIRECT_MESSAGES) // Enable DIRECT_MESSAGES intent
-                .enableIntents(GatewayIntent.MESSAGE_CONTENT) // Enable MESSAGE_CONTENT intent
+                .enableIntents(GatewayIntent.GUILD_MESSAGES)
+                .enableIntents(GatewayIntent.DIRECT_MESSAGES)
+                .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.playing("{Type !checkstock}")); // Set a custom activity (optional)
+                .setActivity(Activity.playing("{Type !checkstock}"));
 
         shardManager = builder.build();
         shardManager.addEventListener(new EventListeners());
+        shardManager.addEventListener(new Premium());
     }
 
     public ShardManager getShardManager() {
@@ -32,7 +34,7 @@ public class DiscordBot {
     }
 
     public static void main(String[] args) {
-        new DiscordBot(); // Initialize the bot
+        new DiscordBot();
     }
 }
 

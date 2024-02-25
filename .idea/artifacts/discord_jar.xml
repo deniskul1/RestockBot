@@ -1,0 +1,72 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="discord:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/discord_jar</output-path>
+    <root id="archive" name="discord.jar">
+      <element id="module-output" name="discord" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/club/minnced/opus-java-natives/1.1.1/opus-java-natives-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.16.0/jackson-annotations-2.16.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/sf/trove4j/trove4j/3.0.3/trove4j-3.0.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/1.8.21/kotlin-stdlib-1.8.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/squareup/okio/okio/3.6.0/okio-3.6.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/squareup/okio/okio-jvm/3.6.0/okio-jvm-3.6.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/cdimascio/dotenv-java/3.0.0/dotenv-java-3.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.21/kotlin-stdlib-jdk7-1.8.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/13.0/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.21/kotlin-stdlib-jdk8-1.8.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/club/minnced/opus-java/1.1.1/opus-java-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-api-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-chrome-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-chromium-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-devtools-v85-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-devtools-v120-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-devtools-v121-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-devtools-v122-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-edge-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-firefox-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-http-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-ie-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-java-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-json-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-manager-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-os-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-remote-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-safari-driver-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/selenium-support-4.18.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/auto-service-annotations-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/byte-buddy-1.14.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/checker-qual-3.41.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/commons-exec-1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/error_prone_annotations-2.23.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/failsafe-3.3.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/failureaccess-1.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/guava-33.0.0-jre.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/j2objc-annotations-2.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/jsr305-3.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-api-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-api-events-1.35.0-alpha.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-context-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-exporter-logging-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-extension-incubator-1.35.0-alpha.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-common-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-extension-autoconfigure-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-extension-autoconfigure-spi-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-logs-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-metrics-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-sdk-trace-1.35.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-java-4.18.1/lib/opentelemetry-semconv-1.23.1-alpha.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20210307/json-20210307.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/neovisionaries/nv-websocket-client/2.14/nv-websocket-client-2.14.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.16.0/jackson-core-2.16.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jsoup/jsoup/1.17.2/jsoup-1.17.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/squareup/okhttp3/okhttp/4.12.0/okhttp-4.12.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/dv8tion/JDA/5.0.0-beta.20/JDA-5.0.0-beta.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/club/minnced/opus-java-api/1.1.1/opus-java-api-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-common/1.9.10/kotlin-stdlib-common-1.9.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.16.0/jackson-databind-2.16.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
