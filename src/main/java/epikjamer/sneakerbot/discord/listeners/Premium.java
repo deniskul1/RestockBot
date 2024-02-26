@@ -5,14 +5,14 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.concurrent.ExecutorService;
@@ -62,7 +62,7 @@ public class Premium extends ListenerAdapter {
                 event.getChannel().sendMessage("You need to have the 'Premium' role to use this command.").queue();
                 return;
             }
-            event.getChannel().sendMessage(MessageCreateData.fromContent("Please reply with the number corresponding to the website you want to check the stock on:\n1: Footlocker CA\n2: Footlocker US\n3: Champs Sports\n4: JD Sports CA\n5: Sport Check")).queue();
+            event.getChannel().sendMessage(MessageCreateData.fromContent("Please reply with the number corresponding to the website you want to check the stock on:\n1: Footlocker CA\n2: Footlocker US\n3: Champs Sports\n4: JD Sports CA\n5: Sport Check \n6: Size.ca")).queue();
             Consumer<MessageReceivedEvent> siteConsumer = siteEvent -> {
                 String siteNumber = siteEvent.getMessage().getContentRaw();
                 String url = getWebsiteFromNumber(siteNumber);
@@ -105,7 +105,17 @@ public class Premium extends ListenerAdapter {
                 return "https://jdsports.ca";
             case "5":
                 return "https://www.sportchek.ca";
-            default:
+            case "6":
+                return "https://size.ca/";
+            case "7":
+                return "https://www.deadstock.ca/";
+            case "8":
+                return "https://www.bbbranded.com/";
+            case "9":
+                return "https://nrml.ca/";
+            case "10":
+                return "https://lessoneseven.com/";
+                default:
                 return null;
         }
     }
@@ -113,46 +123,37 @@ public class Premium extends ListenerAdapter {
     private void navigateAndCheckStock(String url, String itemName, String priceRange, MessageChannel channel, long userId) throws Throwable {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Denis\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-minimized");
+        options.addArguments("--window-size=1920,1080");
         WebDriver driver = new ChromeDriver(options);
         activeSessions.put(userId, driver);
-        driver.get(url);
         try {
-            Thread.sleep(3000); // Wait for page to load
+            driver.get(url);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15)); // Use Duration for the timeout
             WebElement searchbar;
             try {
-                searchbar = driver.findElement(By.xpath("//input[@name='q' or @name='query' or @id='search-input-0']"));
-            } catch (NoSuchElementException e) {
-                // Handle case where search bar is not found, possibly due to being blocked
-                channel.sendMessage("<@" + userId + "> Unable to find the search bar, the website might be blocking access, try again later.").queue();
-                return; // Exit the method early
+                searchbar = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                        "//input[@name='q' or @name='query' or @id='search-input-0' or contains(@class, 'search-menu') or contains(@class, 'modal__toggle-open icon icon-search') or contains(@class, 'icon icon-search')]")));
+                searchbar.click();
+                searchbar.sendKeys(itemName + Keys.RETURN);
+            } catch (TimeoutException e) {
+                channel.sendMessage("<@" + userId + "> The search bar could not be found. The website might be blocked or slow to respond, try again later.").queue();
+                return; // Exit the method early if the search bar can't be found
             }
-            Thread.sleep(3000);
-            List<WebElement> botMessageElements = driver.findElements(By.xpath(
-                    "//*[contains(text(),'We want to make sure it is actually you we are dealing with and not a robot.') or contains(text(),'You have been blocked.') or contains(@class, 'captcha__human__title')]"
-            ));
-
-            if (!botMessageElements.isEmpty()) {
-                channel.sendMessage("<@" + userId + "> Website is currently blocked, try again later.").queue();
-                Thread.sleep(10000);
-                return; // Exit the method early
-            }
-            searchbar.click();
-            searchbar.sendKeys(itemName + Keys.RETURN);
             boolean inStock = false;
             while (!inStock) {
                 try {
-                    Thread.sleep(3000);
                     driver.findElement(By.xpath("//*[contains(text(),'" + priceRange + "')]"));
                     channel.sendMessage("<@" + userId + "> The item is in stock!").queue();
                     inStock = true;
-                } catch (NoSuchElementException e) {
-                    System.out.println("Not in stock, refreshing...");
-                    Thread.sleep(20000);
+                } catch (NoSuchElementException ignored) {
+                    // Refresh every 10 seconds if the item is not found
+                    Thread.sleep(10000);
                     driver.navigate().refresh();
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             driver.quit();
             activeSessions.remove(userId);
