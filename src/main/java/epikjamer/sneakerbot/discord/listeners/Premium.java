@@ -108,7 +108,7 @@ public class Premium extends ListenerAdapter {
             case "6":
                 return "https://size.ca/";
             case "7":
-                return "https://www.deadstock.ca/";
+                return "https://www.nike.com/ca/";
             case "8":
                 return "https://www.bbbranded.com/";
             case "9":
@@ -129,7 +129,7 @@ public class Premium extends ListenerAdapter {
         activeSessions.put(userId, driver);
         try {
             driver.get(url);
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15)); // Use Duration for the timeout
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
             WebElement searchbar;
             try {
                 searchbar = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
@@ -138,16 +138,23 @@ public class Premium extends ListenerAdapter {
                 searchbar.sendKeys(itemName + Keys.RETURN);
             } catch (TimeoutException e) {
                 channel.sendMessage("<@" + userId + "> The search bar could not be found. The website might be blocked or slow to respond, try again later.").queue();
-                return; // Exit the method early if the search bar can't be found
+                return;
             }
             boolean inStock = false;
             while (!inStock) {
                 try {
-                    driver.findElement(By.xpath("//*[contains(text(),'" + priceRange + "')]"));
-                    channel.sendMessage("<@" + userId + "> The item is in stock!").queue();
+                    WebElement itemElement = driver.findElement(By.xpath("//*[contains(text(),'" + priceRange + "')]"));
+                    try {
+                        itemElement.click(); // Attempt to click on the item
+                        Thread.sleep(5000);
+                        String itemLink = driver.getCurrentUrl();
+                        channel.sendMessage("<@" + userId + "> The item is in stock! Link: " + itemLink).queue();
+                    } catch (Exception e) {
+                        // If clicking or getting the link fails, notify the user the item is in stock but without a link
+                        channel.sendMessage("<@" + userId + "> The item is in stock, but the link could not be grabbed.").queue();
+                    }
                     inStock = true;
-                } catch (NoSuchElementException ignored) {
-                    // Refresh every 10 seconds if the item is not found
+                } catch (NoSuchElementException | TimeoutException e) {
                     Thread.sleep(10000);
                     driver.navigate().refresh();
                 }
